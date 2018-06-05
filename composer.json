@@ -1,0 +1,35 @@
+{
+    "name": "xoborg/laravel-redsys",
+    "description": "Package para usar la pasarela de pago Redsys en Laravel",
+    "keywords": [
+        "xoborg",
+        "redsys",
+        "tpv",
+        "laravel"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Xoborg",
+            "email": "developers@xoborg.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Xoborg\\LaravelRedsys\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Xoborg\\LaravelRedsys\\LaravelRedsysServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
