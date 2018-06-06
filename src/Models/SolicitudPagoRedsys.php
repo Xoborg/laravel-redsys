@@ -10,7 +10,7 @@ use Xoborg\LaravelRedsys\Helpers\CryptHelper;
 /**
  * Class PagoRedsys
  */
-class PagoRedsys implements \JsonSerializable
+class SolicitudPagoRedsys implements \JsonSerializable
 {
 	/**
 	 * Identificación de comercio: código FUC
