@@ -3,6 +3,8 @@
 namespace Xoborg\LaravelRedsys\Models;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Xoborg\LaravelRedsys\Exceptions\PagoMerchantParameterException;
 use Xoborg\LaravelRedsys\Helpers\CryptHelper;
 
 /**
@@ -150,10 +152,11 @@ class PagoRedsys implements \JsonSerializable
 
 	/**
 	 * @return array
+	 * @throws PagoMerchantParameterException
 	 */
 	public function jsonSerialize(): array
 	{
-		return collect([
+		$parameters = collect([
 			'Ds_Merchant_MerchantCode' => $this->merchantCode,
 			'Ds_Merchant_Terminal' => $this->terminal,
 			'Ds_Merchant_TransactionType' => $this->transactionType,
@@ -179,11 +182,49 @@ class PagoRedsys implements \JsonSerializable
 			'Ds_Merchant_Pan' => $this->pan,
 			'Ds_Merchant_ExpiryDate' => $this->expiryDate,
 			'Ds_Merchant_CVV2' => $this->cvv2,
-		])
-			->filter(function ($value) {
+		]);
+
+		$this->validateMerchantParameters($parameters);
+
+		return $parameters->filter(function ($value) {
 				return $value && !empty($value);
 			})
 			->toArray();
+	}
+
+	/**
+	 * @param Collection $merchantParameters
+	 * @throws PagoMerchantParameterException
+	 */
+	private function validateMerchantParameters(Collection $merchantParameters)
+	{
+		if ($merchantParameters->get('Ds_Merchant_Order') == null || $merchantParameters->get('Ds_Merchant_Order') == '') {
+			throw PagoMerchantParameterException::noOrderSpecified();
+		}
+
+		if ($merchantParameters->get('Ds_Merchant_Amount') == null || $merchantParameters->get('Ds_Merchant_Amount') == '') {
+			throw PagoMerchantParameterException::noAmountSpecified();
+		}
+
+		if ($merchantParameters->get('Ds_Merchant_MerchantCode') == null || $merchantParameters->get('Ds_Merchant_MerchantCode') == '') {
+			throw PagoMerchantParameterException::noMerchantCodeSpecified();
+		}
+
+		if ($merchantParameters->get('Ds_Merchant_Terminal') == null || $merchantParameters->get('Ds_Merchant_Terminal') == '') {
+			throw PagoMerchantParameterException::noTerminalSpecified();
+		}
+
+		if ($merchantParameters->get('Ds_Merchant_TransactionType') == null || $merchantParameters->get('Ds_Merchant_TransactionType') == '') {
+			throw PagoMerchantParameterException::noTransactionTypeSpecified();
+		}
+
+		if ($merchantParameters->get('Ds_Merchant_Currency') == null || $merchantParameters->get('Ds_Merchant_Currency') == '') {
+			throw PagoMerchantParameterException::noCurrencySpecified();
+		}
+
+		if (preg_match('/^(\d{1,4})|(\d{4,}[A-Za-z0-9]{1,8})$/', $merchantParameters->get('Ds_Merchant_Order')) !== 1) {
+			throw PagoMerchantParameterException::orderFormatInvalid();
+		}
 	}
 
 	/**
