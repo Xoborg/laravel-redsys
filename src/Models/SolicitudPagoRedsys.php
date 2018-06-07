@@ -244,7 +244,7 @@ class SolicitudPagoRedsys implements \JsonSerializable
 	/**
 	 * @return int
 	 */
-	public function saveInDataBase(): int
+	public function saveInDatabase(): int
 	{
 		$pagoRedsys = new PagoRedsys();
 
