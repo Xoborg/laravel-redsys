@@ -2,6 +2,7 @@
 
 namespace Xoborg\LaravelRedsys\Models;
 
+use Illuminate\Support\Carbon;
 use Xoborg\LaravelRedsys\Helpers\CryptHelper;
 use Xoborg\LaravelRedsys\Services\Redsys\DsMerchantConsumerLanguage;
 
@@ -135,5 +136,30 @@ class NotificacionOnlineRedsys
 		$key = CryptHelper::to3DES($this->order, $key);
 		$res = CryptHelper::toHmac256($this->originalMerchantParametersJson, $key);
 		return $firma === strtr(base64_encode($res), '+/', '-_');
+	}
+
+	/**
+	 * @param int $idPagoRedsys
+	 * @return PagoRedsys
+	 */
+	public function updatePagoRedsysConDatosNotificacionOnline(int $idPagoRedsys): PagoRedsys
+	{
+		$pagoRedsys = PagoRedsys::findOrFail($idPagoRedsys);
+
+		$pagoRedsys->ds_date_hour = Carbon::createFromFormat('d/m/Y H:i', "{$this->date} {$this->hour}");
+		$pagoRedsys->ds_amount = $this->amount;
+		$pagoRedsys->ds_currency = $this->currency;
+		$pagoRedsys->ds_order = $this->order;
+		$pagoRedsys->ds_response = $this->response;
+		$pagoRedsys->ds_secure_payment = $this->securePayment;
+		$pagoRedsys->ds_transaction_type = $this->transactionType;
+		$pagoRedsys->ds_card_country = $this->cardCountry;
+		$pagoRedsys->ds_authorisation_code = $this->authorisationCode;
+		$pagoRedsys->ds_consumer_language = $this->consumerLanguage;
+		$pagoRedsys->ds_card_type = $this->cardType;
+		$pagoRedsys->ds_card_brand = $this->cardBrand;
+		$pagoRedsys->save();
+
+		return $pagoRedsys;
 	}
 }

@@ -2,23 +2,37 @@
 
 namespace Xoborg\LaravelRedsys\Tests\Unit;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Xoborg\LaravelRedsys\Helpers\CryptHelper;
 use Xoborg\LaravelRedsys\Models\NotificacionOnlineRedsys;
+use Xoborg\LaravelRedsys\Models\SolicitudPagoRedsys;
 use Xoborg\LaravelRedsys\Tests\TestCase;
 
 class NotificacionOnlineRedsysTest extends TestCase
 {
-	/** @test */
-	function se_valida_la_firma()
-	{
-		$order = 1;
+	Use RefreshDatabase;
 
-		$merchantParameters = base64_encode(json_encode([
+	/**
+	 * @var string
+	 */
+	private $order;
+	/**
+	 * @var string
+	 */
+	private $merchantParameters;
+
+	protected function setUp()
+	{
+		parent::setUp();
+
+		$this->order = 1;
+
+		$this->merchantParameters = base64_encode(json_encode([
 			'Ds_Date' => now()->format('d/m/Y'),
 			'Ds_Hour' => now()->format('H:i'),
 			'Ds_Amount' => 1000,
 			'Ds_Currency' => config('redsys.ds_merchant_currency'),
-			'Ds_Order' => $order,
+			'Ds_Order' => $this->order,
 			'Ds_MerchantCode' => config('redsys.ds_merchant_merchantcode'),
 			'Ds_Terminal' => config('redsys.ds_merchant_terminal'),
 			'Ds_Response' => '0000',
@@ -26,14 +40,42 @@ class NotificacionOnlineRedsysTest extends TestCase
 			'Ds_TransactionType' => config('redsys.ds_merchant_transactiontype'),
 			'Ds_Card_Brand' => 1
 		]));
+	}
 
+
+	/** @test */
+	function se_valida_la_firma()
+	{
 		$key = base64_decode(config('redsys.clave_comercio'));
-		$key = CryptHelper::to3DES($order, $key);
-		$res = CryptHelper::toHmac256($merchantParameters, $key);
+		$key = CryptHelper::to3DES($this->order, $key);
+		$res = CryptHelper::toHmac256($this->merchantParameters, $key);
 		$firma = strtr(base64_encode($res), '+/', '-_');
 
-		$notificacionOnlineRedsys = new NotificacionOnlineRedsys($merchantParameters);
+		$notificacionOnlineRedsys = new NotificacionOnlineRedsys($this->merchantParameters);
 
 		$this->assertTrue($notificacionOnlineRedsys->validarFirma($firma));
+	}
+
+	/** @test */
+	function se_actualiza_pago_redsys_con_datos_notificacion_online()
+	{
+		$solicitudPagoRedsys = new SolicitudPagoRedsys();
+		$solicitudPagoRedsys->order = $this->order;
+		$solicitudPagoRedsys->amount = 1;
+
+		$idPagoRedsys = $solicitudPagoRedsys->saveInDataBase();
+
+		$notificacionOnlineRedsys = new NotificacionOnlineRedsys($this->merchantParameters);
+
+		$notificacionOnlineRedsys->updatePagoRedsysConDatosNotificacionOnline($idPagoRedsys);
+
+		$this->assertDatabaseHas(
+			'pagos_redsys',
+			[
+				'id' => $idPagoRedsys,
+				'Ds_Order' => $notificacionOnlineRedsys->order,
+				'Ds_Amount' => $notificacionOnlineRedsys->amount
+			]
+		);
 	}
 }
