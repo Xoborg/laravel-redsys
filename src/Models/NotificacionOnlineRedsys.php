@@ -9,7 +9,7 @@ use Xoborg\LaravelRedsys\Services\Redsys\DsMerchantConsumerLanguage;
  * Class NotificacionOnlineRedsys
  * @package Xoborg\LaravelRedsys\Models
  */
-class NotificacionOnlineRedsys implements \JsonSerializable
+class NotificacionOnlineRedsys
 {
 	/**
 	 * Fecha
@@ -115,44 +115,14 @@ class NotificacionOnlineRedsys implements \JsonSerializable
 		$this->merchantCode = $merchantParameters['Ds_MerchantCode'];
 		$this->terminal = $merchantParameters['Ds_Terminal'];
 		$this->response = $merchantParameters['Ds_Response'];
-		$this->merchantData = $merchantParameters['Ds_MerchantData'];
+		$this->merchantData = array_key_exists('Ds_MerchantData', $merchantParameters) && $merchantParameters['Ds_MerchantData'] ?? '';
 		$this->securePayment = $merchantParameters['Ds_SecurePayment'];
 		$this->transactionType = $merchantParameters['Ds_TransactionType'];
-		$this->cardCountry = $merchantParameters['Ds_Card_Country'] ?? '';
-		$this->authorisationCode = $merchantParameters['Ds_AuthorisationCode'] ?? '';
-		$this->consumerLanguage = $merchantParameters['Ds_ConsumerLanguage'] ?? DsMerchantConsumerLanguage::SIN_ESPECIFICAR;
-		$this->cardType = $merchantParameters['Ds_Card_Type'] ?? '';
-		$this->cardBrand = $merchantParameters['Ds_Card_Brand'] ?? '';
-	}
-
-	/**
-	 * @return array
-	 */
-	public function jsonSerialize(): array
-	{
-		$parameters = collect([
-			'Ds_Date' => $this->date,
-			'Ds_Hour' => $this->hour,
-			'Ds_Amount' => $this->amount,
-			'Ds_Currency' => $this->currency,
-			'Ds_Order' => $this->order,
-			'Ds_MerchantCode' => $this->merchantCode,
-			'Ds_Terminal' => $this->terminal,
-			'Ds_Response' => $this->response,
-			'Ds_MerchantData' => $this->merchantData,
-			'Ds_SecurePayment' => $this->securePayment,
-			'Ds_TransactionType' => $this->transactionType,
-			'Ds_Card_Country' => $this->cardCountry,
-			'Ds_AuthorisationCode' => $this->authorisationCode,
-			'Ds_ConsumerLanguage' => $this->consumerLanguage,
-			'Ds_Card_Type' => $this->cardType,
-			'Ds_Card_Brand' => $this->cardBrand
-		]);
-
-		return $parameters->filter(function ($value) {
-			return $value && !empty($value);
-		})
-			->toArray();
+		$this->cardCountry = array_key_exists('Ds_Card_Country', $merchantParameters) && $merchantParameters['Ds_Card_Country'] ?? '';
+		$this->authorisationCode = array_key_exists('Ds_AuthorisationCode', $merchantParameters) && $merchantParameters['Ds_AuthorisationCode'] ?? '';
+		$this->consumerLanguage = array_key_exists('Ds_ConsumerLanguage', $merchantParameters) && $merchantParameters['Ds_ConsumerLanguage'] ?? DsMerchantConsumerLanguage::SIN_ESPECIFICAR;
+		$this->cardType = array_key_exists('Ds_Card_Type', $merchantParameters) && $merchantParameters['Ds_Card_Type'] ?? '';
+		$this->cardBrand = array_key_exists('Ds_Card_Brand', $merchantParameters) && $merchantParameters['Ds_Card_Brand'] ?? '';
 	}
 
 	/**
