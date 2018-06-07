@@ -15,29 +15,30 @@ class SolicitudPagoRedsysTest extends TestCase
 	function se_validan_los_merchant_parameters()
 	{
 		$this->expectException(PagoMerchantParameterException::class);
+
 		$this->expectExceptionMessage('El formato del importe no es válido.');
-		$pagoRedsys = new SolicitudPagoRedsys();
-		$pagoRedsys->order = 1;
-		$pagoRedsys->getMerchantParameters();
+
+		$solicitudPagoRedsys = new SolicitudPagoRedsys();
+		$solicitudPagoRedsys->order = 1;
+		$solicitudPagoRedsys->getMerchantParameters();
 	}
 
 	/** @test */
 	function se_inserta_solicitud_pago_en_db()
 	{
-		$pagoRedsys = new SolicitudPagoRedsys();
-		$pagoRedsys->order = 1;
-		$pagoRedsys->amount = 1;
+		$solicitudPagoRedsys = new SolicitudPagoRedsys();
+		$solicitudPagoRedsys->order = 1;
+		$solicitudPagoRedsys->amount = 1;
 
-		$id = $pagoRedsys->saveInDataBase();
+		$id = $solicitudPagoRedsys->saveInDataBase();
 
 		$this->assertDatabaseHas(
 			'pagos_redsys',
 			[
 				'id' => $id,
-				'ds_merchant_order' => $pagoRedsys->order,
-				'ds_merchant_amount' => $pagoRedsys->amount
+				'ds_merchant_order' => $solicitudPagoRedsys->order,
+				'ds_merchant_amount' => $solicitudPagoRedsys->amount
 			]
 		);
-
 	}
 }
