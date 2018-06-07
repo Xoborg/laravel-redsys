@@ -94,7 +94,7 @@ class SolicitudPagoRedsys implements \JsonSerializable
 	public $dateFrecuency;
 	/**
 	 * Fecha límite
-	 * @var Carbon
+	 * @var null|Carbon
 	 */
 	public $chargeExpiryDate;
 	/**
@@ -104,7 +104,7 @@ class SolicitudPagoRedsys implements \JsonSerializable
 	public $authorisationCode;
 	/**
 	 * Fecha de la operación recurrente sucesiva
-	 * @var Carbon
+	 * @var null|Carbon
 	 */
 	public $transactionDate;
 	/**
@@ -239,5 +239,36 @@ class SolicitudPagoRedsys implements \JsonSerializable
 		$ent = $this->getMerchantParameters();
 		$key = CryptHelper::to3DES($this->order, $key);
 		return base64_encode(CryptHelper::toHmac256($ent, $key));
+	}
+
+	/**
+	 * @return int
+	 */
+	public function saveInDataBase(): int
+	{
+		$pagoRedsys = new PagoRedsys();
+
+		$pagoRedsys->ds_merchant_transaction_type = $this->transactionType;
+		$pagoRedsys->ds_merchant_amount = $this->amount;
+		$pagoRedsys->ds_merchant_currency = $this->currency;
+		$pagoRedsys->ds_merchant_order = $this->order;
+		$pagoRedsys->ds_merchant_product_description = $this->productDescription;
+		$pagoRedsys->ds_merchant_titular = $this->titular;
+		$pagoRedsys->ds_merchant_consumer_language = $this->consumerLanguage;
+		$pagoRedsys->ds_merchant_sum_total = $this->sumTotal;
+		$pagoRedsys->ds_merchant_date_frecuency = $this->dateFrecuency;
+		$pagoRedsys->ds_merchant_charge_expiry_date = $this->chargeExpiryDate;
+		$pagoRedsys->ds_merchant_authorisation_code = $this->authorisationCode;
+		$pagoRedsys->ds_merchant_transaction_date = $this->transactionDate;
+		$pagoRedsys->ds_merchant_identifier = $this->identifier;
+		$pagoRedsys->ds_merchant_group = $this->group;
+		$pagoRedsys->ds_merchant_direct_payment = $this->directPayment;
+		$pagoRedsys->ds_merchant_pan = $this->pan;
+		$pagoRedsys->ds_merchant_expiry_date = $this->expiryDate;
+		$pagoRedsys->ds_merchant_ccv2 = $this->cvv2;
+
+		$pagoRedsys->save();
+
+		return $pagoRedsys->id;
 	}
 }
