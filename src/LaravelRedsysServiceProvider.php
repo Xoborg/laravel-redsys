@@ -17,6 +17,10 @@ class LaravelRedsysServiceProvider extends ServiceProvider
 				__DIR__.'/database/migrations/create_pagos_redsys_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_pagos_redsys_table.php'),
 			], 'migrations');
 		}
+
+		$this->publishes([
+			__DIR__.'/resources/views' => resource_path('views/vendor/laravel-redsys'),
+		], 'views');
 	}
 
 	public function register()
