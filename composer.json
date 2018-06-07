@@ -17,9 +17,17 @@
     "require": {
         "php": "^7.1"
     },
+    "require-dev": {
+        "orchestra/testbench": "~3.0"
+    },
     "autoload": {
         "psr-4": {
             "Xoborg\\LaravelRedsys\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Xoborg\\LaravelRedsys\\Tests\\": "tests"
         }
     },
     "extra": {
