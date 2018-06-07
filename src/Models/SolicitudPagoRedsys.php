@@ -198,32 +198,27 @@ class SolicitudPagoRedsys implements \JsonSerializable
 	 */
 	private function validateMerchantParameters(Collection $merchantParameters)
 	{
-		if ($merchantParameters->get('Ds_Merchant_Order') == null || $merchantParameters->get('Ds_Merchant_Order') == '') {
-			throw PagoMerchantParameterException::noOrderSpecified();
+		if (preg_match('/^\d{9,}$/', $merchantParameters->get('Ds_Merchant_MerchantCode')) !== 1) {
+			throw PagoMerchantParameterException::invalidMerchantCode();
 		}
 
-		if ($merchantParameters->get('Ds_Merchant_Amount') == null || $merchantParameters->get('Ds_Merchant_Amount') == '') {
-			throw PagoMerchantParameterException::noAmountSpecified();
-		}
-
-		if ($merchantParameters->get('Ds_Merchant_MerchantCode') == null || $merchantParameters->get('Ds_Merchant_MerchantCode') == '') {
-			throw PagoMerchantParameterException::noMerchantCodeSpecified();
-		}
-
-		if ($merchantParameters->get('Ds_Merchant_Terminal') == null || $merchantParameters->get('Ds_Merchant_Terminal') == '') {
-			throw PagoMerchantParameterException::noTerminalSpecified();
-		}
-
-		if ($merchantParameters->get('Ds_Merchant_TransactionType') == null || $merchantParameters->get('Ds_Merchant_TransactionType') == '') {
-			throw PagoMerchantParameterException::noTransactionTypeSpecified();
-		}
-
-		if ($merchantParameters->get('Ds_Merchant_Currency') == null || $merchantParameters->get('Ds_Merchant_Currency') == '') {
-			throw PagoMerchantParameterException::noCurrencySpecified();
+		if (preg_match('/^\d{1,3}$/', $merchantParameters->get('Ds_Merchant_Terminal')) !== 1) {
+			throw PagoMerchantParameterException::invalidTerminal();
 		}
 
 		if (preg_match('/^(\d{1,4})|(\d{4,}[A-Za-z0-9]{1,8})$/', $merchantParameters->get('Ds_Merchant_Order')) !== 1) {
-			throw PagoMerchantParameterException::orderFormatInvalid();
+			throw PagoMerchantParameterException::invalidOrderFormat();
+		}
+
+		if (preg_match('/^\d{1,12}$/', $merchantParameters->get('Ds_Merchant_Amount')) !== 1) {
+			throw PagoMerchantParameterException::invalidAmount();
+		}
+		if (preg_match('/^\d{3,4}$/', $merchantParameters->get('Ds_Merchant_Currency')) !== 1) {
+			throw PagoMerchantParameterException::invalidCurrency();
+		}
+
+		if (preg_match('/^[0-9OPQRS]{1}$/', $merchantParameters->get('Ds_Merchant_TransactionType')) !== 1) {
+			throw PagoMerchantParameterException::invalidTransactionType();
 		}
 	}
 
