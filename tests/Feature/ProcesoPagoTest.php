@@ -32,7 +32,7 @@ class ProcesoPagoTest extends TestCase
 		$notificacionOnline = new NotificacionOnlineRedsys($responseNotificacionOnline['Ds_MerchantParameters']);
 
 		$this->assertTrue($solicitudPagoRedsys->order === $notificacionOnline->order);
-		$this->assertTrue($notificacionOnline->validarFirma($responseNotificacionOnline['Ds_Signature']));
+		$this->assertTrue($notificacionOnline->firmaValida($responseNotificacionOnline['Ds_Signature']));
 
 		$notificacionOnline->updatePagoRedsysConDatosNotificacionOnline($idPagoRedsys);
 

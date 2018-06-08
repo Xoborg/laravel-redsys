@@ -130,7 +130,7 @@ class NotificacionOnlineRedsys
 	 * @param string $firma
 	 * @return bool
 	 */
-	public function validarFirma(string $firma): bool
+	public function firmaValida(string $firma): bool
 	{
 		$key = base64_decode(config('redsys.clave_comercio'));
 		$key = CryptHelper::to3DES($this->order, $key);

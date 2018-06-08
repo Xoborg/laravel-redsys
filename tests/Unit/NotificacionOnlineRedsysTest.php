@@ -53,7 +53,7 @@ class NotificacionOnlineRedsysTest extends TestCase
 
 		$notificacionOnlineRedsys = new NotificacionOnlineRedsys($this->merchantParameters);
 
-		$this->assertTrue($notificacionOnlineRedsys->validarFirma($firma));
+		$this->assertTrue($notificacionOnlineRedsys->firmaValida($firma));
 	}
 
 	/** @test */
