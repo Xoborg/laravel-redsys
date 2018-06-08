@@ -206,7 +206,7 @@ class SolicitudPagoRedsys implements \JsonSerializable
 			throw PagoMerchantParameterException::invalidTerminal();
 		}
 
-		if (preg_match('/^(\d{1,4})|(\d{4,}[A-Za-z0-9]{1,8})$/', $merchantParameters->get('Ds_Merchant_Order')) !== 1) {
+		if (preg_match('/^\d{4,}([A-Za-z0-9]{1,8})?$/', $merchantParameters->get('Ds_Merchant_Order')) !== 1) {
 			throw PagoMerchantParameterException::invalidOrderFormat();
 		}
 
