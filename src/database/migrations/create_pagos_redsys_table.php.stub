@@ -1,0 +1,61 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreatePagosRedsysTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('pagos_redsys', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('ds_merchant_transaction_type');
+            $table->integer('ds_merchant_amount');
+            $table->integer('ds_merchant_currency');
+            $table->string('ds_merchant_order');
+            $table->string('ds_merchant_product_description')->nullable();
+            $table->string('ds_merchant_titular')->nullable();
+            $table->string('ds_merchant_consumer_language')->default(0);
+            $table->integer('ds_merchant_sum_total')->nullable();
+            $table->integer('ds_merchant_date_frecuency')->nullable();
+            $table->date('ds_merchant_charge_expiry_date')->nullable();
+            $table->integer('ds_merchant_authorisation_code')->nullable();
+            $table->date('ds_merchant_transaction_date')->nullable();
+            $table->integer('ds_merchant_identifier')->nullable();
+            $table->integer('ds_merchant_group')->nullable();
+            $table->integer('ds_merchant_direct_payment')->nullable();
+            $table->integer('ds_merchant_pan')->nullable();
+            $table->integer('ds_merchant_expiry_date')->nullable();
+            $table->integer('ds_merchant_ccv2')->nullable();
+            $table->dateTime('ds_date_hour')->nullable();
+            $table->integer('ds_amount')->nullable();
+            $table->integer('ds_currency')->nullable();
+            $table->string('ds_order')->nullable();
+            $table->integer('ds_response')->nullable();
+            $table->integer('ds_secure_payment')->nullable();
+            $table->string('ds_transaction_type')->nullable();
+            $table->integer('ds_card_country')->nullable();
+            $table->string('ds_authorisation_code')->nullable();
+            $table->integer('ds_consumer_language')->nullable();
+            $table->string('ds_card_type')->nullable();
+            $table->string('ds_card_brand')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('pagos_redsys');
+    }
+}
