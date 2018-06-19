@@ -25,6 +25,12 @@ Y en nuestra vista iría un formulario similar al siguiente:
 
 ## Instalación
 
+Puedes instalar el package mediante composer con el siguiente comando:
+
+```bash
+composer require xoborg/laravel-redsys
+```
+
 Puedes publicar la migración con:
 
 ```bash
@@ -192,3 +198,7 @@ Puedes ejecutar los tests con:
 ```bash
 vendor/bin/phpunit
 ```
+
+## License
+
+The MIT License (MIT). Mira el [archivo de licencia](LICENSE) para más información.
