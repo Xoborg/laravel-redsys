@@ -3,7 +3,6 @@
 namespace Xoborg\LaravelRedsys\Models;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Xoborg\LaravelRedsys\Exceptions\PagoMerchantParameterException;
 use Xoborg\LaravelRedsys\Helpers\CryptHelper;
 
@@ -184,8 +183,6 @@ class SolicitudPagoRedsys implements \JsonSerializable
 			'Ds_Merchant_CVV2' => $this->cvv2,
 		]);
 
-		$this->validateMerchantParameters($parameters);
-
 		return $parameters->filter(function ($value) {
 				return $value && !empty($value);
 			})
@@ -193,45 +190,48 @@ class SolicitudPagoRedsys implements \JsonSerializable
 	}
 
 	/**
-	 * @param Collection $merchantParameters
 	 * @throws PagoMerchantParameterException
 	 */
-	private function validateMerchantParameters(Collection $merchantParameters)
+	private function validateMerchantParameters()
 	{
-		if (preg_match('/^\d{9,}$/', $merchantParameters->get('Ds_Merchant_MerchantCode')) !== 1) {
+		if (preg_match('/^\d{9,}$/', $this->merchantCode) !== 1) {
 			throw PagoMerchantParameterException::invalidMerchantCode();
 		}
 
-		if (preg_match('/^\d{1,3}$/', $merchantParameters->get('Ds_Merchant_Terminal')) !== 1) {
+		if (preg_match('/^\d{1,3}$/', $this->terminal) !== 1) {
 			throw PagoMerchantParameterException::invalidTerminal();
 		}
 
-		if (preg_match('/^\d{4,}([A-Za-z0-9]{1,8})?$/', $merchantParameters->get('Ds_Merchant_Order')) !== 1) {
+		if (preg_match('/^\d{4,}([A-Za-z0-9]{1,8})?$/', $this->order) !== 1) {
 			throw PagoMerchantParameterException::invalidOrderFormat();
 		}
 
-		if (preg_match('/^\d{1,12}$/', $merchantParameters->get('Ds_Merchant_Amount')) !== 1) {
+		if (preg_match('/^\d{1,12}$/', $this->amount) !== 1) {
 			throw PagoMerchantParameterException::invalidAmount();
 		}
-		if (preg_match('/^\d{3,4}$/', $merchantParameters->get('Ds_Merchant_Currency')) !== 1) {
+		if (preg_match('/^\d{3,4}$/', $this->currency) !== 1) {
 			throw PagoMerchantParameterException::invalidCurrency();
 		}
 
-		if (preg_match('/^[0-9OPQRS]{1}$/', $merchantParameters->get('Ds_Merchant_TransactionType')) !== 1) {
+		if (preg_match('/^[0-9OPQRS]{1}$/', $this->transactionType) !== 1) {
 			throw PagoMerchantParameterException::invalidTransactionType();
 		}
 	}
 
 	/**
 	 * @return string
+	 * @throws PagoMerchantParameterException
 	 */
 	public function getMerchantParameters(): string
 	{
+		$this->validateMerchantParameters();
+
 		return base64_encode(json_encode($this));
 	}
 
 	/**
 	 * @return string
+	 * @throws PagoMerchantParameterException
 	 */
 	public function getMerchantSignature(): string
 	{
@@ -242,10 +242,13 @@ class SolicitudPagoRedsys implements \JsonSerializable
 	}
 
 	/**
-	 * @return int
+	 * @return PagoRedsys
+	 * @throws PagoMerchantParameterException
 	 */
-	public function saveInDatabase(): int
+	public function saveInDatabase(): PagoRedsys
 	{
+		$this->validateMerchantParameters();
+
 		$pagoRedsys = new PagoRedsys();
 
 		$pagoRedsys->ds_merchant_transaction_type = $this->transactionType;
@@ -269,6 +272,6 @@ class SolicitudPagoRedsys implements \JsonSerializable
 
 		$pagoRedsys->save();
 
-		return $pagoRedsys->id;
+		return $pagoRedsys;
 	}
 }

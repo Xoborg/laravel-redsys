@@ -90,7 +90,7 @@ $solicitudPagoRedsys->productDescription = 'Producto de ejemplo';
 $solicitudPagoRedsys->titular = 'Nombre del cliente';
 $solicitudPagoRedsys->merchantName = 'Empresa de ejemplo S.L.';
 
-$idPagoRedsys = $solicitudPagoRedsys->saveInDatabase();
+$pagoRedsys = $solicitudPagoRedsys->saveInDatabase();
 
 // Guardariamos el id del pago en nuestra propia tabla de compras o similar.
 
@@ -201,4 +201,4 @@ vendor/bin/phpunit
 
 ## License
 
-The MIT License (MIT). Mira el [archivo de licencia](LICENSE) para más información.
+The MIT License (MIT). Mira el [archivo de licencia](LICENSE.md) para más información.

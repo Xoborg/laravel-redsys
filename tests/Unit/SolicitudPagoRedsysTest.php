@@ -16,7 +16,7 @@ class SolicitudPagoRedsysTest extends TestCase
 	{
 		$this->expectException(PagoMerchantParameterException::class);
 
-		$this->expectExceptionMessage('El formato del importe no es válido.');
+		$this->expectExceptionMessage('El formato de la orden (número de pedido) no es válido.');
 
 		$solicitudPagoRedsys = new SolicitudPagoRedsys();
 		$solicitudPagoRedsys->order = 1;
@@ -27,15 +27,15 @@ class SolicitudPagoRedsysTest extends TestCase
 	function se_inserta_solicitud_pago_en_db()
 	{
 		$solicitudPagoRedsys = new SolicitudPagoRedsys();
-		$solicitudPagoRedsys->order = 1;
+		$solicitudPagoRedsys->order = '0001';
 		$solicitudPagoRedsys->amount = 1;
 
-		$id = $solicitudPagoRedsys->saveInDataBase();
+		$pagoRedsys = $solicitudPagoRedsys->saveInDataBase();
 
 		$this->assertDatabaseHas(
 			'pagos_redsys',
 			[
-				'id' => $id,
+				'id' => $pagoRedsys->id,
 				'ds_merchant_order' => $solicitudPagoRedsys->order,
 				'ds_merchant_amount' => $solicitudPagoRedsys->amount
 			]
