@@ -25,7 +25,7 @@ class NotificacionOnlineRedsysTest extends TestCase
 	{
 		parent::setUp();
 
-		$this->order = 1;
+		$this->order = '0001';
 
 		$this->merchantParameters = base64_encode(json_encode([
 			'Ds_Date' => now()->format('d/m/Y'),
@@ -63,16 +63,16 @@ class NotificacionOnlineRedsysTest extends TestCase
 		$solicitudPagoRedsys->order = $this->order;
 		$solicitudPagoRedsys->amount = 1;
 
-		$idPagoRedsys = $solicitudPagoRedsys->saveInDataBase();
+		$pagoRedsys = $solicitudPagoRedsys->saveInDataBase();
 
 		$notificacionOnlineRedsys = new NotificacionOnlineRedsys($this->merchantParameters);
 
-		$notificacionOnlineRedsys->updatePagoRedsysConDatosNotificacionOnline($idPagoRedsys);
+		$notificacionOnlineRedsys->updatePagoRedsysConDatosNotificacionOnline($pagoRedsys->id);
 
 		$this->assertDatabaseHas(
 			'pagos_redsys',
 			[
-				'id' => $idPagoRedsys,
+				'id' => $pagoRedsys->id,
 				'Ds_Order' => $notificacionOnlineRedsys->order,
 				'Ds_Amount' => $notificacionOnlineRedsys->amount
 			]
