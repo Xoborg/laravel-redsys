@@ -15,8 +15,8 @@ class PagoRedsys extends Model
 	 */
 	public function getResponseText(): string
 	{
-		if ($this->response) {
-			return NotificacionOnlineHumanReadableResponses::getResponse($this->response);
+		if (!is_null($this->ds_response)) {
+			return NotificacionOnlineHumanReadableResponses::getResponse($this->ds_response);
 		}
 
 		return 'No se ha recibido la notificación online.';
