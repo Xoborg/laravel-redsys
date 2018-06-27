@@ -259,6 +259,7 @@ class SolicitudPagoRedsys implements \JsonSerializable
 		$pagoRedsys->ds_merchant_titular = $this->titular;
 		$pagoRedsys->ds_merchant_consumer_language = $this->consumerLanguage;
 		$pagoRedsys->ds_merchant_sum_total = $this->sumTotal;
+		$pagoRedsys->ds_merchant_merchantdata = $this->merchantData;
 		$pagoRedsys->ds_merchant_date_frecuency = $this->dateFrecuency;
 		$pagoRedsys->ds_merchant_charge_expiry_date = $this->chargeExpiryDate;
 		$pagoRedsys->ds_merchant_authorisation_code = $this->authorisationCode;
