@@ -59,7 +59,7 @@ class NotificacionOnlineRedsys extends Model
 	{
 		$this->originalMerchantParametersJson = $merchantParameters;
 
-		$merchantParameters = json_decode(base64_decode(strtr($merchantParameters, '-_', '+/')), true);
+		$merchantParameters = json_decode(urldecode(base64_decode(strtr($merchantParameters, '-_', '+/'))), true);
 
 		$this->ds_date_hour = Carbon::createFromFormat('d/m/Y H:i', "{$merchantParameters['Ds_Date']} {$merchantParameters['Ds_Hour']}");
 		$this->ds_amount = $merchantParameters['Ds_Amount'];
