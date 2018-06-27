@@ -143,9 +143,9 @@ if ($notificacionOnlineRedsys->firmaValida($request->input('Ds_Signature'))) {
 	
 	...
 	
-	// Podemos utilizar la clase auxiliar "NotificacionOnlineHumanReadableResponses" para obtener un código de respuesta que se pueda enseñar al propio usuario
+	// Podemos utilizar el método "getResponse()" del modelo NotificacionOnlineRedsys para obtener un código de respuesta que se pueda enseñar al propio usuario
 	
-	$codigoRespuesta = \Xoborg\LaravelRedsys\Services\Redsys\NotificacionOnlineHumanReadableResponses::getResponse($notificacionOnlineRedsys->response);
+	$codigoRespuesta = $notificacionOnlineRedsys->getResponse();
 	
 	return view('pago-ok', compact('codigoRespuesta'));
 	
