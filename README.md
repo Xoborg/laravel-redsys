@@ -31,13 +31,13 @@ Puedes instalar el package mediante composer con el siguiente comando:
 composer require xoborg/laravel-redsys
 ```
 
-Puedes publicar la migración con:
+Puedes publicar las migraciones con:
 
 ```bash
 php artisan vendor:publish --provider="Xoborg\LaravelRedsys\LaravelRedsysServiceProvider" --tag="migrations"
 ```
 
-Después de que se haya publicado la migración, puedes crear la tabla 'pagos_redsys' ejecutando las migraciones:
+Después de que se hayan publicado las migraciones, puedes crear las tablas 'pagos_redsys' y 'notificaciones_online_redsys' ejecutando las migraciones:
 
 ```bash
 php artisan migrate
@@ -67,7 +67,7 @@ Además, puedes acceder a una vista con el formulario de ejemplo con:
 php artisan vendor:publish --provider="Xoborg\LaravelRedsys\LaravelRedsysServiceProvider" --tag="views"
 ```
 
-Esto hará que se cree un archivo blade en `resources/views/vendor/laravel-redsys/example-payment-form.blade`.
+Esto hará que se cree un archivo blade en `resources/views/vendor/laravel-redsys/example-payment-form.blade.php`.
 
 ## Documentación
 
@@ -104,7 +104,8 @@ Para poder recibir la notificación online tendremos que tener una ruta que acep
 ```php
 ...
 
-$notificacionOnlineRedsys = new \Xoborg\LaravelRedsys\Models\NotificacionOnlineRedsys($request->input('Ds_MerchantParameters'));
+$notificacionOnlineRedsys = new \Xoborg\LaravelRedsys\Models\NotificacionOnlineRedsys();
+$notificacionOnlineRedsys->setUp($request->input('Ds_MerchantParameters'));
 
 if ($notificacionOnlineRedsys->firmaValida($request->input('Ds_Signature'))) {
 	
@@ -114,8 +115,8 @@ if ($notificacionOnlineRedsys->firmaValida($request->input('Ds_Signature'))) {
 	
 	...
 	
-	// Actualizamos el pago guardado en DB con los datos recibidos
-	$pagoRedsys = $notificacionOnlineRedsys->updatePagoRedsysConDatosNotificacionOnline($pagoRedsys->id);
+	// Insertamos la notificación online en DB
+	$pagoRedsys->notificacionesOnlineRedsys()->save($notificacionOnlineRedsys);
 	
 	// Ahora podríamos cambiar el estado de la compra en nuestra propia tabla, etc.
 }
@@ -131,7 +132,8 @@ Además, el usuario habrá sido redirigido a la ruta de OK o KO, dos acciones de
 
 // IMPORTANTE: Aquí sólo debemos utilizar la información que nos llegue para mostrarle al usuario el estado de la operación, no debemos utilizar esta información para guardarla en DB ni fiarnos de ella ya que puede haberse modificado.
 
-$notificacionOnlineRedsys = new \Xoborg\LaravelRedsys\Models\NotificacionOnlineRedsys($request->input('Ds_MerchantParameters'));
+$notificacionOnlineRedsys = new \Xoborg\LaravelRedsys\Models\NotificacionOnlineRedsys();
+$notificacionOnlineRedsys->setUp($request->input('Ds_MerchantParameters'));
 
 if ($notificacionOnlineRedsys->firmaValida($request->input('Ds_Signature'))) {
 	
@@ -141,7 +143,7 @@ if ($notificacionOnlineRedsys->firmaValida($request->input('Ds_Signature'))) {
 	
 	...
 	
-	// Podemos utilizar la clase auxiliar "NotificacionOnlineHumanReadableResponses" para obtener un código de respueta que se pueda enseñar al propio usuario
+	// Podemos utilizar la clase auxiliar "NotificacionOnlineHumanReadableResponses" para obtener un código de respuesta que se pueda enseñar al propio usuario
 	
 	$codigoRespuesta = \Xoborg\LaravelRedsys\Services\Redsys\NotificacionOnlineHumanReadableResponses::getResponse($notificacionOnlineRedsys->response);
 	
