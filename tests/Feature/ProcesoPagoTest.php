@@ -29,20 +29,30 @@ class ProcesoPagoTest extends TestCase
 
 		$responseNotificacionOnline = $fakeRedsysGateway->responseNotificacionOnline();
 
-		$notificacionOnline = new NotificacionOnlineRedsys($responseNotificacionOnline['Ds_MerchantParameters']);
+		$notificacionOnlineRedsys = new NotificacionOnlineRedsys();
+		$notificacionOnlineRedsys->setUp($responseNotificacionOnline['Ds_MerchantParameters']);
 
-		$this->assertTrue($solicitudPagoRedsys->order === $notificacionOnline->order);
-		$this->assertTrue($notificacionOnline->firmaValida($responseNotificacionOnline['Ds_Signature']));
+		$this->assertTrue($solicitudPagoRedsys->order === $notificacionOnlineRedsys->ds_order);
+		$this->assertTrue($notificacionOnlineRedsys->firmaValida($responseNotificacionOnline['Ds_Signature']));
 
-		$notificacionOnline->updatePagoRedsysConDatosNotificacionOnline($pagoRedsys->id);
+		$pagoRedsys->notificacionesOnlineRedsys()->save($notificacionOnlineRedsys);
 
 		$this->assertDatabaseHas(
 			'pagos_redsys',
 			[
 				'id' => $pagoRedsys->id,
 				'ds_merchant_order' => $solicitudPagoRedsys->order,
-				'ds_order' => $notificacionOnline->order,
-				'ds_amount' => $notificacionOnline->amount
+				'ds_merchant_amount' => $solicitudPagoRedsys->amount
+			]
+		);
+
+		$this->assertDatabaseHas(
+			'notificaciones_online_redsys',
+			[
+				'id' => $notificacionOnlineRedsys->id,
+				'ds_order' => $notificacionOnlineRedsys->ds_order,
+				'ds_amount' => $notificacionOnlineRedsys->ds_amount,
+				'pago_redsys_id' => $pagoRedsys->id
 			]
 		);
 	}

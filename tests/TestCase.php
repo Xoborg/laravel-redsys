@@ -44,5 +44,8 @@ abstract class TestCase extends OrchestraTestCase
 	{
 		include_once __DIR__.'/../src/database/migrations/create_pagos_redsys_table.php.stub';
 		(new \CreatePagosRedsysTable())->up();
+
+		include_once __DIR__.'/../src/database/migrations/create_notificaciones_online_redsys_table.php.stub';
+		(new \CreateNotificacionesOnlineRedsysTable())->up();
 	}
 }
