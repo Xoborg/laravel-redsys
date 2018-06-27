@@ -23,6 +23,7 @@ class CreatePagosRedsysTable extends Migration
             $table->string('ds_merchant_titular')->nullable();
             $table->string('ds_merchant_consumer_language')->default(0);
             $table->integer('ds_merchant_sum_total')->nullable();
+            $table->string('ds_merchant_merchantdata', 1024)->nullable();
             $table->integer('ds_merchant_date_frecuency')->nullable();
             $table->date('ds_merchant_charge_expiry_date')->nullable();
             $table->integer('ds_merchant_authorisation_code')->nullable();
@@ -33,18 +34,6 @@ class CreatePagosRedsysTable extends Migration
             $table->integer('ds_merchant_pan')->nullable();
             $table->integer('ds_merchant_expiry_date')->nullable();
             $table->integer('ds_merchant_ccv2')->nullable();
-            $table->dateTime('ds_date_hour')->nullable();
-            $table->integer('ds_amount')->nullable();
-            $table->integer('ds_currency')->nullable();
-            $table->string('ds_order')->nullable();
-            $table->integer('ds_response')->nullable();
-            $table->integer('ds_secure_payment')->nullable();
-            $table->string('ds_transaction_type')->nullable();
-            $table->integer('ds_card_country')->nullable();
-            $table->string('ds_authorisation_code')->nullable();
-            $table->integer('ds_consumer_language')->nullable();
-            $table->string('ds_card_type')->nullable();
-            $table->string('ds_card_brand')->nullable();
             $table->timestamps();
         });
     }

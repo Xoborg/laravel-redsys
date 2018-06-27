@@ -54,6 +54,7 @@ class FakeRedsysGateway
 			'Ds_MerchantCode' => $this->solicitudPagoRedsys->merchantCode,
 			'Ds_Terminal' => $this->solicitudPagoRedsys->terminal,
 			'Ds_Response' => '0000',
+			'Ds_MerchantData' => $this->solicitudPagoRedsys->merchantData,
 			'Ds_SecurePayment' => 0,
 			'Ds_TransactionType' => $this->solicitudPagoRedsys->transactionType,
 			'Ds_Card_Brand' => 1

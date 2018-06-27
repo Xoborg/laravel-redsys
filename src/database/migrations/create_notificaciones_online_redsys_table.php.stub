@@ -1,0 +1,47 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateNotificacionesOnlineRedsysTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('notificaciones_online_redsys', function (Blueprint $table) {
+            $table->increments('id');
+            $table->dateTime('ds_date_hour')->nullable();
+            $table->integer('ds_amount')->nullable();
+            $table->integer('ds_currency')->nullable();
+            $table->string('ds_order')->nullable();
+            $table->integer('ds_response')->nullable();
+            $table->string('ds_merchant_merchantdata', 1024)->nullable();
+            $table->integer('ds_secure_payment')->nullable();
+            $table->string('ds_transaction_type')->nullable();
+            $table->integer('ds_card_country')->nullable();
+            $table->string('ds_authorisation_code')->nullable();
+            $table->integer('ds_consumer_language')->nullable();
+            $table->string('ds_card_type')->nullable();
+            $table->string('ds_card_brand')->nullable();
+            $table->unsignedInteger('pago_redsys_id');
+            $table->foreign('pago_redsys_id')
+				->references('id')->on('pagos_redsys');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('notificaciones_online_redsys');
+    }
+}

@@ -5,6 +5,7 @@ namespace Xoborg\LaravelRedsys\Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Xoborg\LaravelRedsys\Helpers\CryptHelper;
 use Xoborg\LaravelRedsys\Models\NotificacionOnlineRedsys;
+use Xoborg\LaravelRedsys\Models\PagoRedsys;
 use Xoborg\LaravelRedsys\Models\SolicitudPagoRedsys;
 use Xoborg\LaravelRedsys\Tests\TestCase;
 
@@ -20,6 +21,10 @@ class NotificacionOnlineRedsysTest extends TestCase
 	 * @var string
 	 */
 	private $merchantParameters;
+	/**
+	 * @var PagoRedsys
+	 */
+	private $pagoRedsys;
 
 	protected function setUp()
 	{
@@ -36,10 +41,17 @@ class NotificacionOnlineRedsysTest extends TestCase
 			'Ds_MerchantCode' => config('redsys.ds_merchant_merchantcode'),
 			'Ds_Terminal' => config('redsys.ds_merchant_terminal'),
 			'Ds_Response' => '0000',
+			'Ds_MerchantData' => '',
 			'Ds_SecurePayment' => 0,
 			'Ds_TransactionType' => config('redsys.ds_merchant_transactiontype'),
 			'Ds_Card_Brand' => 1
 		]));
+
+		$solicitudPagoRedsys = new SolicitudPagoRedsys();
+		$solicitudPagoRedsys->order = $this->order;
+		$solicitudPagoRedsys->amount = 1;
+
+		$this->pagoRedsys = $solicitudPagoRedsys->saveInDataBase();
 	}
 
 
@@ -51,30 +63,27 @@ class NotificacionOnlineRedsysTest extends TestCase
 		$res = CryptHelper::toHmac256($this->merchantParameters, $key);
 		$firma = strtr(base64_encode($res), '+/', '-_');
 
-		$notificacionOnlineRedsys = new NotificacionOnlineRedsys($this->merchantParameters);
+		$notificacionOnlineRedsys = new NotificacionOnlineRedsys();
+		$notificacionOnlineRedsys->setUp($this->merchantParameters);
 
 		$this->assertTrue($notificacionOnlineRedsys->firmaValida($firma));
 	}
 
 	/** @test */
-	function se_actualiza_pago_redsys_con_datos_notificacion_online()
+	function se_puede_insertar_notificacion_online_a_un_pago()
 	{
-		$solicitudPagoRedsys = new SolicitudPagoRedsys();
-		$solicitudPagoRedsys->order = $this->order;
-		$solicitudPagoRedsys->amount = 1;
+		$notificacionOnlineRedsys = new NotificacionOnlineRedsys();
+		$notificacionOnlineRedsys->setUp($this->merchantParameters);
 
-		$pagoRedsys = $solicitudPagoRedsys->saveInDataBase();
-
-		$notificacionOnlineRedsys = new NotificacionOnlineRedsys($this->merchantParameters);
-
-		$notificacionOnlineRedsys->updatePagoRedsysConDatosNotificacionOnline($pagoRedsys->id);
+		$this->pagoRedsys->notificacionesOnlineRedsys()->save($notificacionOnlineRedsys);
 
 		$this->assertDatabaseHas(
-			'pagos_redsys',
+			'notificaciones_online_redsys',
 			[
-				'id' => $pagoRedsys->id,
-				'Ds_Order' => $notificacionOnlineRedsys->order,
-				'Ds_Amount' => $notificacionOnlineRedsys->amount
+				'id' => $notificacionOnlineRedsys->id,
+				'ds_order' => $notificacionOnlineRedsys->ds_order,
+				'ds_amount' => $notificacionOnlineRedsys->ds_amount,
+				'pago_redsys_id' => $this->pagoRedsys->id
 			]
 		);
 	}
