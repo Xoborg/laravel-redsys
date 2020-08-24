@@ -69,10 +69,10 @@ class NotificacionOnlineRedsys extends Model
 		$this->ds_merchant_merchantdata = $merchantParameters['Ds_MerchantData'];
 		$this->ds_secure_payment = $merchantParameters['Ds_SecurePayment'];
 		$this->ds_transaction_type = $merchantParameters['Ds_TransactionType'];
-		$this->ds_card_country = array_key_exists('Ds_Card_Country', $merchantParameters) && $merchantParameters['Ds_Card_Country'] ?? '';
+		$this->ds_card_country = $merchantParameters['Ds_Card_Country'] ?? '';
 		$this->ds_authorisation_code = $merchantParameters['Ds_AuthorisationCode'] ?? '';
-		$this->ds_consumer_language = array_key_exists('Ds_ConsumerLanguage', $merchantParameters) && $merchantParameters['Ds_ConsumerLanguage'] ?? DsMerchantConsumerLanguage::SIN_ESPECIFICAR;
-		$this->ds_card_type = array_key_exists('Ds_Card_Type', $merchantParameters) && $merchantParameters['Ds_Card_Type'] ?? '';
-		$this->ds_card_brand = array_key_exists('Ds_Card_Brand', $merchantParameters) && $merchantParameters['Ds_Card_Brand'] ?? '';
+		$this->ds_consumer_language = $merchantParameters['Ds_ConsumerLanguage'] ?? DsMerchantConsumerLanguage::SIN_ESPECIFICAR;
+		$this->ds_card_type = $merchantParameters['Ds_Card_Type'] ?? '';
+		$this->ds_card_brand = $merchantParameters['Ds_Card_Brand'] ?? '';
 	}
 }
